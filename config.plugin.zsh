@@ -17,7 +17,7 @@ if [[ ${zsh_loaded_plugins[-1]} != */config && -z ${fpath[(r)${0:h}]} ]] {
 # Standard hash for plugins, to not pollute the namespace
 typeset -gA Plugins
 Plugins[CONFIG_DIR]="${0:h}"
-source $Plugins[CONFIG_DIR]/{env,alias,widgets}/*.zsh
+# source $Plugins[CONFIG_DIR]/env.zsh
 
 autoload -Uz $Plugins[CONFIG_DIR]/functions/*(:t)
 
