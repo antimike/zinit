@@ -1,0 +1,51 @@
+#!/bin/zsh -f
+# Wrapper around rjo that recursively expands variable names
+
+. $ZSH_CUSTOM/lib/io_format.zsh
+zmodload zsh/zutil
+# autoload jexpandargs needs
+# needs rjo
+
+jfrom() {
+    local -a __named __rjo_opts __yq_opts __args __recurse __rjo
+
+    zparseopts -D -E -- \
+        R+=__recurse \
+        N+:=__named -with-name+:=__named \
+        a=__rjo_opts -array=__rjo_opts \
+        o+:=__yq_opts
+    if [[ $1 == "--" ]] shift
+
+    __args=($@ ${${__named//(-N|--with-name)}/(#m)*/$MATCH=$MATCH})
+    __rjo=(rjo $__rjo_opts --)
+
+    debug $(typeset -p 1 __args)
+    $__rjo ${__args/(#m)*/$(jexpand $MATCH $__recurse)}
+}
+
+jexpand() {
+    debug jexpand args: $@
+    local param=$1 && shift
+    local __opts=(-R $@)
+    if (( $# % 2 )); then   # Complete expansion: odd number of -R's
+        debug Performing complete expansion of $param
+        if [[ -n ${(tP)param} ]]; then
+            jfrom $__opts -- "$param"
+        else
+            print -- $param
+        fi
+    elif [[ $param == *=* ]]; then
+        debug Performing incomplete expansion of KV pair $param
+        print -- ${param%%=*}=$(jexpand ${param#*=} $__opts)
+    else
+        debug Dispatching $param for incomplete expansion
+        case ${(Pt)param} in
+            *integer*|*float*|*scalar*) print -- ${(P)param} ;;
+            *array*) jfrom $__opts -a -- ${(P)param} ;;
+            *association*) print -- ${(kP)param/(#m)*/${MATCH}=$(jfrom $__opts -- ${${(P)param}[${MATCH}]})} ;;
+            *) print -- $param ;;
+        esac
+    fi
+}
+
+jfrom $@

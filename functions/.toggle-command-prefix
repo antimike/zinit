@@ -1,0 +1,65 @@
+#!/usr/bin/env zsh
+# $1: the text to insert
+# $2: (pattern) the command to remove
+# $3: (optional, pattern) remove if found after the command
+# $4: (optional, pattern) remove with following arg if found after command
+# e.g.:  .toggle-command-prefix 'nice ' 'nice' '(--adjustment=|-n?)*' '(--adjustment|-n)'
+
+emulate -L zsh
+setopt extendedglob
+
+autoload -Uz split-shell-arguments
+
+if (($#BUFFER == 0)); then
+	zle up-history
+	CURSOR=$#BUFFER  # Assume the last command was the problematic one
+fi
+
+local -a reply
+local REPLY{,2}
+split-shell-arguments
+
+local end_cmd=$'(\n##''|\||\|\||&&|;)'
+local -i end_loc=2+"${${(@)reply[0,REPLY]}[(I)$~end_cmd]}"
+local -i new_loc=end_loc
+if [[ "$reply[end_loc]" = (if|elif|then|else|while|do|until|\{|\() ]]; then
+	end_loc+=2
+fi
+while [[ "$reply[end_loc]" = [[:IDENT:]]##=* ]]; do
+	end_loc+=2
+done
+new_loc=end_loc
+
+(($# < 2)) && return 1
+insert=$1
+cmdmatch=$2
+shift 2
+# (Q) removes one layer of quotes
+if [[ ${(Q)reply[new_loc]} = $~cmdmatch ]]; then
+	# found command, remove it
+	while (($#reply > new_loc )); do
+		# found (possibly quoted) argument
+		if (( $# > 0)) && [[ ${(Q)reply[new_loc+2]} = $~1 ]]; then
+			((new_loc+=2))
+		elif (($# > 1)) && [[ ${(Q)reply[new_loc+2]} = $~2 ]]; then
+			((new_loc+=4))
+		else
+			break
+		fi
+	done
+	if ((REPLY > new_loc + 1)); then
+		((CURSOR = CURSOR - ${#${(j::)reply[end_loc,new_loc+1]}}))
+	else
+		((CURSOR = ${#reply[0,new_loc-1]} + 1))
+	fi
+	# pattern match on cut text
+	if zstyle -t :zle:toggle-command-prefix:${(j::)reply[end_loc,new_loc+1]} copy; then
+		# copy-region-as-kill "string" should do this, but it seems to be broken
+		killring=("$CUTBUFFER" "${(@)killring[0,-2]}")
+		CUTBUFFER=${(j::)reply[end_loc,new_loc+1]}
+	fi
+	BUFFER="${(j::)reply[0,end_loc-1]}${(j::)reply[new_loc+2,-1]}"
+else
+	((CURSOR += $#insert))
+	BUFFER=${(j::)reply[0,new_loc-1]}$insert${(j::)reply[new_loc,-1]}
+fi

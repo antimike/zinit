@@ -1,0 +1,8 @@
+#!/bin/zsh -f
+# Prints commented lines found directly underneath a function definition
+# (inspired by Python's docstring)
+# Before printing, the text is trimmed to remove leading whitespace and #.
+
+caller=${funcstack[-2]:-$funcstack[-1]}
+sed -n "/^${caller}()/,/^[^#]/p" ${__FILE__:-${(%):-%x}} |
+    sed "1c\\${caller#_}" | sed '$d' | sed 's/^#//'

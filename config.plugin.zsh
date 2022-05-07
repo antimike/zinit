@@ -17,8 +17,9 @@ if [[ ${zsh_loaded_plugins[-1]} != */config && -z ${fpath[(r)${0:h}]} ]] {
 # Standard hash for plugins, to not pollute the namespace
 typeset -gA Plugins
 Plugins[CONFIG_DIR]="${0:h}"
+source $Plugins[CONFIG_DIR]/{env,alias,widgets}/*.zsh
 
-autoload -Uz template-script
+autoload -Uz $Plugins[CONFIG_DIR]/functions/*(:t)
 
 # Use alternate vim marks [[[ and ]]] as the original ones can
 # confuse nested substitutions, e.g.: ${${${VAR}}}
