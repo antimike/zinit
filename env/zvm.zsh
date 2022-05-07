@@ -1,13 +1,5 @@
 #!/bin/zsh
 
-# Tempdir for zsh-vi-mode plugin
-export ZVM_TMPDIR="$HOME/.cache/nvim/tmp"
-mkdir -p $ZVM_TMPDIR
-
-function zvm_init_fzf() {
-    [ -f $HOME/.fzf.zsh ] && source $HOME/.fzf.zsh
-}
-
 # TODO: Customize cursor colors with LS_COLORS or LESS_TERMCAP
 MODE_CURSOR_VIINS=bar
 MODE_CURSOR_REPLACE=$MODE_CURSOR_VIINS
