@@ -1,0 +1,8 @@
+first:
+  - foo: bar
+  - eeney: meeney
+second:
+  - tweedledum: tweedledee
+tags:
+  - tag2
+  - tag3

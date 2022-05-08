@@ -1,0 +1,72 @@
+# Make sure run-help works correctly
+# TODO: Improve this with personalized run-help implementation
+unalias run-help
+autoload run-help
+
+if [[ ! -f ~/.zpm/zpm.zsh ]]; then
+  git clone --recursive https://github.com/zpm-zsh/zpm ~/.zpm
+fi
+source ~/.zpm/zpm.zsh
+
+# Pull in OMZ (doesn't actually source anything)
+zpm load @omz
+
+# Load any OMZ libraries we want or our OMZ plugins require
+zpm load                \
+  @omz-lib/compfix      \
+  @omz-lib/completion   \
+  @omz-lib/directories  \
+  @omz-lib/functions    \
+  @omz-lib/git          \
+  @omz-lib/grep         \
+  @omz-lib/history      \
+  @omz-lib/key-bindings \
+  @omz-lib/misc         \
+  @omz-lib/spectrum     \
+  @omz-lib/theme-and-appearance
+
+omz_plugins=(fzf vi-mode colorize copybuffer pip safe-paste sudo taskwarrior themes autojump colored-man-pages gitfast git dirhistory extract asdf)
+
+for plugin in $omz_plugins; do
+  zpm load @omz/${plugin}
+done
+
+zpm load @github/zpm-zsh/zpm-readme
+zpm load @github/zpm-zsh/zpm-info
+zpm load @github/jeffreytse/zsh-vi-mode
+zpm load @github/kazhala/dotbare
+zpm load @github/Schnouki/git-annex-zsh-completion
+# zpm load @github/b4b4r07/enhancd
+zpm load @github/jhawthorn/fzy,hook:"make && make install"
+zpm load @github/mollifier/anyframe
+
+zpm load @file/autojump,origin:/usr/share/autojump/autojump.zsh
+
+# zpm load @omz-theme/robbyrussell
+zpm load @omz-theme/dracula
+
+declare -A plugin_commands=(
+  [npm]='npm completion'
+  [mcfly]='mcfly init zsh'
+)
+declare -A completion_commands=(
+  [rustup]='rustup completions zsh'
+)
+
+for name cmd in ${(kv)completion_commands}; do
+  zpm load @empty/${name},gen-completion:"${cmd}"
+done
+
+for name cmd in ${(kv)plugin_commands}; do
+  zpm load @empty/${name},gen-plugin:"${cmd}"
+done
+
+zpm load @file/completion-opts,origin:~/.zcomp
+autoload -Uz compinit
+fpath+=~/.zfunc
+
+# Must be loaded after compinit
+# TODO: Investigate why this isn't working...
+zpm load @github/Aloxaf/fzf-tab,source:lib/zsh-ls-colors/ls-colors.zsh
+zpm load @github/Aloxaf/fzf-tab,source:fzf-tab.zsh
+zpm load @github/zsh-users/zsh-syntax-highlighting

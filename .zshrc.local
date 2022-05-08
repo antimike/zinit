@@ -1,0 +1,5 @@
+#!/bin/zsh
+# File for zinit to "pick" as the "plugin source" for this dir
+# Doesn't actually need to contain anythin, since the other scripts under env/ and alias/ will be "multisrc"d
+
+setopt EXTENDEDGLOB GLOBSTARSHORT
