@@ -11,3 +11,5 @@ export DOTBARE_KEY="
   --bind=alt-t:toggle-preview
 "
 export DOTBARE_DIFF_PAGER="delta"
+
+alias db=dotbare
