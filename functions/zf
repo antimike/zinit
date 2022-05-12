@@ -1,0 +1,32 @@
+#!/bin/zsh -f
+# zf: Convenience function to manage personal collection of zsh autoload functions
+
+export FUNCDIR=${${(%):-%x}:h}
+
+_zf_functions() {
+    # local -a funks=( ${(f)"$(gfunky --color n \
+    #   | grep -v '^\s\+#!' \
+    #   | sed -n '/^[a-zA-Z_-}]/,/^\s\+[^#]/p' \
+    #   | grep -v '^\s\+[^#]' \
+    #   | grep -v '^\s*$' \
+    #   | sed 's/^\s*//' \
+    #   | awk -vRS='}\n' -vFS=' {\n# ' -vOFS=':' '{$1=$1; print;}' \
+    #   | grep -v '^$' \
+    #   | sed 's/^\([a-zA-Z_-]\+\)()\( {\)\?/\1/' \
+    #   | grep -v '^#')"}
+    # )
+    if ! [[ -d $FUNCDIR ]]; then
+        print -u2 "ERROR: zf needs \$FUNCDIR to be defined"
+    fi
+    find $FUNCDIR -maxdepth 1 -type f
+}
+
+_zf_usage() {
+    cat <<-USAGE
+zf
+	USAGE
+}
+
+zf() {
+
+}

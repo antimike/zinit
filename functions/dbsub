@@ -1,0 +1,33 @@
+#!/bin/zsh -f
+# Add submodule to dotbare repo
+# Params:
+#   $1      Submodule to add
+
+local -i ret=0 numdirs=$#dirstack
+local base remote
+
+__error() {
+    print -u2 -l -- $@
+    let ret+=1
+    return $ret
+}
+
+__enter_dir() {
+    pushd $1 >/dev/null 2>&1 || __error "Could not cd into $1"
+}
+
+trap 'popd $(($#dirstack - numdirs)); unfunction __enter_dir __error' EXIT SIGINT
+
+__enter_dir $1 && {
+    base="$(git rev-parse --show-toplevel)" || __error "Directory $1 does not belong to a git repository"
+} && {
+    [[ "${base:P}" == "${1:P}" ]] || read -t5 -q "?Supplied directory '$1' belongs to parent repository '$base'.  Continue?"
+} && __enter_dir $base && {
+    remote="$(git remote get-url origin 2>/dev/null)"  || __error "Could not get remote URL for repository $base"
+} && {
+    dotbare submodule add "$remote" . || __error "Failed to add submodule $base to dotbare index"
+} && {
+    dotbare commit -o .gitmodules $base -m "Add submodule ${base:P}" || __error "Failed to commit submodule $base to dotbare index"
+}
+
+return $ret
