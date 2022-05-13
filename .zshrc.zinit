@@ -346,6 +346,10 @@ export MARKER_DATA_HOME="/home/hactar/.local/share/marker"
 zinit ice lucid wait as"program" pick"bin/marker" src"bin/marker.sh"
 zinit light antimike/marker.git
 
+export DHENV_ROOT=~/.dhenv
+zinit ice lucid light-mode wait
+zinit snippet ${DHENV_ROOT}/init_cache.sh
+
 # - - - - - - - - - - - - - - - - - - - -
 # User Configuration
 # - - - - - - - - - - - - - - - - - - - -

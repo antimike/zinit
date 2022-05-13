@@ -1,5 +1,28 @@
 #!/bin/zsh -f
 # zf: Convenience function to manage personal collection of zsh autoload functions
+# GOALS:
+#   - Generate the following from simple, intuitive markup:
+#       * arg parsing
+#       * completion
+#       * helptext
+#   - Possibly use declarative config file (YAML?) to generate "wrapper function" which handles the above and passes parsed args to inner function
+#   - e.g.:
+#   ```yaml
+#   params:
+#     - name: first
+#       values: <zsh_code>
+#       summary: ...
+#   flags:
+#     - name: verbose
+#       summary: increase output verbosity
+#       repeat: true
+#   options:
+#     - forms: [-f, --file]
+#       repeat: true
+#       name: files
+#       args:
+#         - values: <zsh_code>
+#   ```
 
 export FUNCDIR=${${(%):-%x}:h}
 
@@ -25,6 +48,12 @@ _zf_usage() {
     cat <<-USAGE
 zf
 	USAGE
+}
+
+_zf_get_usage {
+    # Get helptext for an autoload function
+    # @PARAMS
+    # a     |       Description     |   _values
 }
 
 zf() {

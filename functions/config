@@ -1,0 +1,12 @@
+#!/bin/zsh -f
+# Function to manage polyglot project configurations
+# Supports a basic git-style plugin architecture: If an executable with the name config-<subcmd> is available on $PATH, then the call `config subcmd ...` will pass all remaining args and options to config-<subcmd>.
+
+local -r me=$0 subcmd=$1 && shift
+local subcmd_script="${me}-${subcmd}"
+if command -v ${(q-)subcmd_script} >/dev/null 2>&1; then
+    $subcmd_script $@
+else
+    print -u2 "${me}: error: Command ${subcmd_script} for subcommand ${subcmd} not found"
+    return 1
+fi

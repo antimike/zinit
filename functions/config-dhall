@@ -1,0 +1,8 @@
+#!/bin/zsh -f
+# Manage local configuration files in dhall
+# In particular, allow local caching of Prelude / etc.
+
+print -u2 "${0}: Warning: Not implemented"
+print -u2 "Passing all arguments to dhall"
+
+dhall $@
