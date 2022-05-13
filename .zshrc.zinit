@@ -355,7 +355,6 @@ zinit snippet ${DHENV_ROOT}/init_cache.sh
 # - - - - - - - - - - - - - - - - - - - -
 
 setopt no_beep
-unalias run-help && autoload run-help
 
 # Array of command prefixes whose args will be autoquoted
 export ZAQ_PREFIXES=('git commit -m' 'git commit -am')
