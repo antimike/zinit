@@ -1,6 +1,10 @@
 #!/bin/zsh
-# Output of commands `pyenv init -` and `pyenv virtualenv-init -`
 
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init --path)"
+
+# Output of commands `pyenv init -` and `pyenv virtualenv-init -`
 export PYENV_SHELL=zsh
 source '/home/hactar/.pyenv/libexec/../completions/pyenv.zsh'
 command pyenv rehash 2>/dev/null
