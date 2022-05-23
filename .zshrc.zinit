@@ -220,7 +220,9 @@ zinit wait lucid light-mode for \
   as"completion" \
       thuandt/zsh-pipx \
       zpm-zsh/new-file-from-template \
-      horosgrisa/mysql-colorize
+      horosgrisa/mysql-colorize \
+  as"completion" \
+      OMZ::plugins/pip/pip.plugin.zsh
       # TODO: Change sed keybinds
       # TODO: Add snippets keybinds
 
@@ -335,8 +337,12 @@ zinit wait lucid for \
 zinit wait lucid light-mode as"null" multisrc'*.zsh' for \
     ${ZDOTDIR}/snippets
 
-zinit ice lucid light-mode wait
-zinit snippet ~/.nix-profile/etc/profile.d/nix.sh
+export ASDF_DIR=~/.asdf
+zinit ice wait lucid light-mode
+zinit snippet ~/.asdf/asdf.sh
+
+zinit ice wait lucid light-mode as"completion"
+zinit snippet ~/.asdf/completions/_asdf
 
 export GVM_ROOT=~/.gvm
 zinit ice lucid light-mode wait
