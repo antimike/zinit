@@ -17,4 +17,6 @@ fi
 
 # Bibtex source for FZF
 export FZF_BIBTEX_CACHEDIR="$HOME/.fzf_bibtex_cache"
-export FZF_BIBTEX_SOURCES="$PAPIS_LIBRARY/library.bib"
+if [[ -r "$PAPIS_LIBRARY/library.bib" ]]; then
+        export FZF_BIBTEX_SOURCES="$PAPIS_LIBRARY/library.bib"
+fi
