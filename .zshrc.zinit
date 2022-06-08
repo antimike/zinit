@@ -344,17 +344,12 @@ zinit snippet ~/.asdf/asdf.sh
 zinit ice wait lucid light-mode as"completion"
 zinit snippet ~/.asdf/completions/_asdf
 
-export GVM_ROOT=~/.gvm
-zinit ice lucid light-mode wait
-zinit snippet ${GVM_ROOT}/scripts/gvm-default
+zinit as"completion" pick"contrib/zsh_completion/_autorandr" wait lucid light-mode for \
+        phillipberndt/autorandr
 
 export MARKER_DATA_HOME="/home/hactar/.local/share/marker"
 zinit ice lucid wait as"program" pick"bin/marker" src"bin/marker.sh"
 zinit light antimike/marker.git
-
-export DHENV_ROOT=~/.dhenv
-zinit ice lucid light-mode wait
-zinit snippet ${DHENV_ROOT}/init_cache.sh
 
 # - - - - - - - - - - - - - - - - - - - -
 # User Configuration
