@@ -3,13 +3,14 @@
 typeset -A opt_args
 local -a funks=( ${(f)"$(gfunky --color n \
   | grep -v '^\s\+#!' \
-  | sed -n '/^[a-zA-Z_-}]/,/^\s\+[^#]/p' \
+  | sed -n '/^[a-zA-Z_-]/,/^\s\+[^#]/p' \
   | grep -v '^\s\+[^#]' \
   | grep -v '^\s*$' \
   | sed 's/^\s*//' \
   | awk -vRS='}\n' -vFS=' {\n# ' -vOFS=':' '{$1=$1; print;}' \
   | grep -v '^$' \
   | sed 's/^\([a-zA-Z_-]\+\)()\( {\)\?/\1/' \
+  | sed 's/()//g' \
   | grep -v '^#')"}
 )
 
@@ -26,9 +27,10 @@ local -a arguments=(
   {-v,--verbose}'[Enable verbose output]'
   '(*)--color[Colorize funk definitions]:y/n:(y n)'
   + '(action)'
-  '(* -r -R)-a[Add a new funk]:name:()'   # TODO: Add _guard in action here
-  '(* -a -R)-r[Remove existing funk (remove all in pwd if none given)]:funk:(($funks))'
-  '(* -a -r)-R[Rename existing funk]:existing funk:(($funks)):new funk name:'
+  '(* -e -r -R)-a[Add a new funk]:name:()'   # TODO: Add _guard in action here
+  '(* -a -r -R)-e[Edit existing funk]:existing funk:(($funks))'   # TODO: Add _guard in action here
+  '(* -a -e -R)-r[Remove existing funk (remove all in pwd if none given)]:funk:(($funks))'
+  '(* -a -e -r)-R[Rename existing funk]:existing funk:(($funks)):new funk name:'
 )
 
 _arguments -s -S $arguments
