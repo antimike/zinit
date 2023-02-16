@@ -21,9 +21,11 @@ while [[ $# -gt 0 ]]; do
     fi
 
     local fname=${(P)name%%:*} fields=${(P)name#*:}
+    local passfile=${PASSWORD_STORE_DIR}/${fname}.gpg
 
-    if [[ ! -f "${PASS_DIR}/${fname}.gpg" ]]; then
-        return 0
+    if [[ ! -f "$passfile" ]]; then
+        print "Password file '$passfile' not found" >&2
+        return 2
     else
         if [[ "$fname" == "${(P)name}" ]]; then
             export ${name}="$(pass show "$fname" | head -1)"
