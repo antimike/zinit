@@ -1,0 +1,1 @@
+/home/hactar/.zshrc
