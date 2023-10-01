@@ -1,7 +1,11 @@
-#!usr/bin/env zsh
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 
-export ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
-source "${ZINIT_HOME}/zinit.zsh"
+#!usr/bin/env zsh
 
 # - - - - - - - - - - - - - - - - - - - -
 # Profiling Tools
@@ -26,6 +30,31 @@ export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
 
 export CACHEDIR="$HOME/.local/share"
 [[ -d "$CACHEDIR" ]] || mkdir -p "$CACHEDIR"
+
+export ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+
+### Added by Zinit's installer
+if [[ ! -f ${ZINIT_HOME}/zinit.zsh ]]; then
+    print -P "%F{33} %F{220}Installing %F{33}ZDHARMA-CONTINUUM%F{220} Initiative Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})…%f"
+    command mkdir -p "$HOME/.local/share/zinit" && command chmod g-rwX "$HOME/.local/share/zinit"
+    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.local/share/zinit/zinit.git" && \
+        print -P "%F{33} %F{34}Installation successful.%f%b" || \
+        print -P "%F{160} The clone has failed.%f%b"
+fi
+
+source "${ZINIT_HOME}/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
+
+# Load a few important annexes, without Turbo
+# (this is currently required for annexes)
+zinit light-mode for \
+    zdharma-continuum/zinit-annex-as-monitor \
+    zdharma-continuum/zinit-annex-bin-gem-node \
+    zdharma-continuum/zinit-annex-patch-dl \
+    zdharma-continuum/zinit-annex-rust
+
+### End of Zinit's installer chunk
 
 
 # Load The Prompt System And Completion System And Initilize Them.
@@ -350,9 +379,9 @@ zi snippet https://raw.githubusercontent.com/junegunn/fzf-git.sh/main/fzf-git.sh
 zinit as"completion" pick"contrib/zsh_completion/_autorandr" wait lucid light-mode for \
         phillipberndt/autorandr
 
-export MARKER_DATA_HOME="/home/hactar/.local/share/marker"
-zinit ice lucid wait as"program" pick"bin/marker" src"bin/marker.sh"
-zinit light antimike/marker.git
+# export MARKER_DATA_HOME="/home/hseldon/.local/share/marker"
+# zinit ice lucid wait as"program" pick"bin/marker" src"bin/marker.sh"
+# zinit light antimike/marker.git
 
 # - - - - - - - - - - - - - - - - - - - -
 # User Configuration
@@ -366,7 +395,7 @@ export ZAQ_PREFIXES=('git commit -m' 'git commit -am')
 # Load in light-mode: no reporting (this speeds up the process considerably)
 zinit wait lucid light-mode for \
     multisrc'{env,alias,widgets}/*.zsh' \
-        _local/config
+        ~/.config/zsh
 
 # - - - - - - - - - - - - - - - - - - - -
 # Theme / Prompt Customization
@@ -389,3 +418,9 @@ fi
 # zle bindkey '^t' _histdb-isearch
 
 config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+
+# To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
+[[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
+
+# Created by `pipx` on 2023-10-01 23:02:33
+export PATH="$PATH:/home/hseldon/.local/bin"
