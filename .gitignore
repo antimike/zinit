@@ -28,3 +28,5 @@ zsdoc/data
 !/tests/_output/.gitkeep
 
 .zsh_history
+.p10k.zsh
+.zprofile
